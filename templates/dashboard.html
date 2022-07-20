@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card-wrapper">
+
+    <div class="card">
+
+        <h1 class="center">Dashboard</h1>
+        <image class="center profile" src="{{ url_for('static', filename='Assets/profile image.png') }}" alt="dashboard">
+        <p class="center"><strong>Username:</strong> {{ session['user']['username'].capitalize() }}<br></p>
+
+        <div class="center">
+            <a href="/user/signout" class="btn btn--secondary">Sign Out</a>
+        </div>
+
+    </div>
+
+    <div class="card">
+    
+        <h1 class="center">Add Budget</h1>
+        
+            <form name="create_form">
+
+            <label for="title">Enter Name of Budget</label>
+            <input type="text" name="title" class="field" required>
+
+            <label for="budget">Enter Budget Amount</label>
+            <input type="number" name="budget" class="field" required>
+
+            <p class="error error--hidden"></p>
+        
+            <div class="center">
+                <input type="submit" class="btn btn--secondary"></input>
+            </div>
+
+        </form>
+    
+    </div>
+</div>
+
+<div id="overlay">
+    <h1 class="center" style="color:white">Add Transaction</h1>
+    
+    <form name="transaction_form">
+    
+        <label for="budget_id" style="color:white">Budget</label>
+        <input id="id" type="text" name="budget_id" class="field" required>
+    
+        <label for="transaction" style="color:white">Transaction Name</label>
+        <input type="text" name="transaction" class="field" required>
+
+        <label for="amount" style="color:white">Transaction Ammount</label>
+        <input type="number" name="amount" class="field" required>
+    
+        <label for="date" style="color:white">Transaction Date</label>
+        <input type="date" name="date" class="field" required>
+    
+        <label for="type" style="color:white">Transaction Type</label>
+        <select name="type">
+            <option value="Entertainment">Entertainment</option>
+            <option value="Food">Food</option>
+            <option value="Loans">Loans</option>
+            <option value="Other">Other</option>
+        </select>
+    
+        <input type="submit" value="add" class="btn btn--secondary" onclick="off()">
+    
+    </form>
+</div>
+
+<div class="container">
+    {% for budget_name in budgets %}
+        <div class="row">
+            <div class="col">
+                <div class="budget-card">
+                    <h1>{{ budget_name.capitalize() }}</h1>
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" aria-label="Example with label"
+                            style="width:{{100*(budgets[budget_name].total_spent/budgets[budget_name].budget)}}%"
+                            aria-valuenow="{{100*budgets[budget_name].total_spent/budgets[budget_name].budget}}" aria-valuemin="0"
+                            aria-valuemax="100">
+                            {{100*budgets[budget_name].total_spent/budgets[budget_name].budget}}%
+                        </div>
+                    </div>
+                    <p class="center">You have spent ${{budgets[budget_name].total_spent}} out of
+                        ${{budgets[budget_name].budget}} and have ${{budgets[budget_name].remaining_budget}} remaining</p>
+                </div>
+            </div>
+            <div class="col-md-auto">
+                <div class="center">
+                    <input id="{{budget_name}}" type="button" value="Add Transaction" class="budget_btn" onclick="on(this.id)" onchange="change()"></input>
+                </div>
+                <div class="center">
+                    <input id="{{budget_name}}" type="button" value="View Summary" class="budget_btn" onclick="show(this.id)"></input>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+{% for budget_name in budgets %}
+    <div id="summary_{{budget_name}}" class="overlay">
+        <table class="table" style="color:white; padding: 5%;">
+            <tr>
+                <th>Name</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Type</th>
+            </tr>
+            {% for transaction in budgets[budget_name]["transactions"] %}
+            <tr>
+                <th>
+                    {{transaction.capitalize()}}
+                </th>
+                <th>
+                    ${{budgets[budget_name]["transactions"][transaction]["amount"]}}
+                </th>
+                <th>
+                    {{budgets[budget_name]["transactions"][transaction]["date"]}}
+                </th>
+                <th>
+                    {{budgets[budget_name]["transactions"][transaction]["transaction_type"]}}
+                </th>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <div class="center">
+            <input id="{{budget_name}}" type="button" value="Close" class="budget_btn" onclick="hide(this.id)">
+            </input>
+        </div>
+    </div>
+{% endfor %}
+
+{% endblock %}
