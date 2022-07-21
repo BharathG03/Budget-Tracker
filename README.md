@@ -7,5 +7,8 @@ A web app that allows users to sign up/log in and keep track of budgets and tran
 ### Dashboard
 ![](static/Assets/Dashboard.png)
 
+### Data in MongoDB Database
+![](static/Assets/MongoDB_data.png)
+
 ## Tech Stack
 The web app utilizes HTML/CSS along with JavaScript to create the UI. The backend is powered by Python (specifically the Flask Libray). User data is stored using NOSQL in a MongoDB database. Quearies are made using HTTP Requests.
